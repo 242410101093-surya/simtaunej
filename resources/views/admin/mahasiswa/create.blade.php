@@ -88,6 +88,34 @@
                         @enderror
                     </div>
 
+                    <!-- Program Studi -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Program Studi <span class="text-danger">*</span>
+                        </label>
+                        @if(!empty($adminProdi))
+                            {{-- Admin dengan prodi tertentu: field di-lock otomatis --}}
+                            <input type="hidden" name="prodi_asal" value="{{ $adminProdi }}">
+                            <div class="form-control bg-light text-muted d-flex align-items-center gap-2" style="height: auto; min-height: 38px;">
+                                <i class="bi bi-building-check text-primary"></i>
+                                <strong>{{ $adminProdi }}</strong>
+                                <span class="badge bg-primary-subtle text-primary ms-1 rounded-pill">Auto</span>
+                            </div>
+                            <small class="text-muted">Prodi otomatis sesuai akun Kepala Prodi Anda.</small>
+                        @else
+                            {{-- Admin global: bebas pilih prodi --}}
+                            <select name="prodi_asal" class="form-select @error('prodi_asal') is-invalid @enderror" required>
+                                <option value="">-- Pilih Program Studi --</option>
+                                <option value="Sistem Informasi" {{ old('prodi_asal') == 'Sistem Informasi' ? 'selected' : '' }}>Sistem Informasi</option>
+                                <option value="Teknologi Informasi" {{ old('prodi_asal') == 'Teknologi Informasi' ? 'selected' : '' }}>Teknologi Informasi</option>
+                                <option value="Informatika" {{ old('prodi_asal') == 'Informatika' ? 'selected' : '' }}>Informatika</option>
+                            </select>
+                            @error('prodi_asal')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        @endif
+                    </div>
+
                     <hr>
 
                     <!-- Dosen Pembimbing -->

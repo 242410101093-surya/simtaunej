@@ -7,6 +7,7 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="icon" type="image/png" href="{{ url('/logo-unej.png') }}">
 
     <style>
         :root {
@@ -34,6 +35,49 @@
             align-items: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             animation: oceanWave 10s ease-in-out infinite;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+            background-size: 24px 24px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bg-glow-1 {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            top: -150px;
+            right: -100px;
+            background: radial-gradient(circle, rgba(0, 180, 216, 0.25) 0%, transparent 70%);
+            z-index: 1;
+            pointer-events: none;
+            filter: blur(50px);
+        }
+
+        .bg-glow-2 {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            bottom: -200px;
+            left: -150px;
+            background: radial-gradient(circle, rgba(2, 2, 62, 0.4) 0%, transparent 70%);
+            z-index: 1;
+            pointer-events: none;
+            filter: blur(50px);
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
         }
 
         @keyframes oceanWave {
@@ -218,24 +262,141 @@
             color: #ffffff;
             transform: scale(1.1);
         }
+
+        /* Variasi Background Modern */
+        .floating-shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .shape-1 { width: 150px; height: 150px; top: 10%; left: 5%; animation-duration: 20s; animation-delay: 0s; }
+        .shape-2 { width: 250px; height: 250px; top: 60%; left: 15%; animation-duration: 25s; animation-delay: -5s; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        .shape-3 { width: 100px; height: 100px; top: 20%; right: 10%; animation-duration: 15s; animation-delay: -2s; }
+        .shape-4 { width: 200px; height: 200px; bottom: 10%; right: 5%; animation-duration: 22s; animation-delay: -10s; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+        .shape-5 { width: 80px; height: 80px; top: 40%; left: 50%; animation-duration: 18s; animation-delay: -8s; }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+
+        /* Global Loading Overlay */
+        .global-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(2, 2, 62, 0.85); /* Semi-transparent dark navy base */
+            backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .global-loader.d-none {
+            display: none !important;
+        }
+
+        .loader-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        /* Spinner design: fading gradient rotating ring styled in blue */
+        .loader-spinner {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, rgba(37, 99, 235, 0.05) 10%, #2563eb 50%, #3b82f6 100%);
+            -webkit-mask: radial-gradient(farthest-side, transparent 75%, #000 76%);
+            mask: radial-gradient(farthest-side, transparent 75%, #000 76%);
+            animation: spin-clockwise 1s linear infinite;
+        }
+
+        .loader-text {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            animation: text-pulse 1.5s ease-in-out infinite;
+            text-transform: uppercase;
+        }
+
+        @keyframes spin-clockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes text-pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
+    <!-- Global Loader Overlay -->
+    <div id="global-loader" class="global-loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <div class="loader-text">LOADING...</div>
+        </div>
+    </div>
+
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+    
+    <!-- Floating Elements -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    <div class="floating-shape shape-4"></div>
+    <div class="floating-shape shape-5"></div>
 
     <div class="container px-4 px-md-5">
         <div class="row align-items-center justify-content-center m-0 min-vh-100 g-4 g-md-5">
             
             <div class="col-md-6 col-lg-6 text-white mb-4 mb-md-0 d-flex flex-column justify-content-center align-items-start ps-md-0">
-                <div class="mb-4 bg-white bg-opacity-10 d-flex align-items-center justify-content-center rounded-circle" style="width: 70px; height: 70px;">
-                    <i class="bi bi-shield-lock-fill text-white" style="font-size: 2.2rem;"></i>
+                <div class="mb-4 bg-white bg-opacity-10 d-flex align-items-center justify-content-center rounded-4 p-2 shadow-sm" style="width: 75px; height: 75px; border: 1px solid rgba(255,255,255,0.15);">
+                    <img src="{{ url('/logo-unej.png') }}" alt="Logo UNEJ" style="height: 55px; width: auto; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">
                 </div>
                 
-                <h1 class="fw-bold mb-3 display-3" style="letter-spacing: -1px;">SELAMAT DATANG</h1>
+                <h1 class="fw-bold mb-3 display-3" style="letter-spacing: -2px;">SELAMAT DATANG</h1>
                 
                 <p class="fs-5 text-white bg-opacity-75 mb-4 lh-base" style="max-width: 550px;">
                     Selangkah lebih dekat menuju gelar sarjana. <br>
                     Tetap semangat dan tuntaskan bimbingan tugas akhirmu!
                 </p>
+                
+                <div class="p-4 rounded-4 bg-white bg-opacity-10 border border-white border-opacity-10 w-100 mb-4" style="max-width: 500px;">
+                    <h6 class="fw-bold mb-3 text-warning"><i class="bi bi-award-fill me-2"></i> Lulus Tepat Waktu dengan SIM-TA</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small mb-0">
+                        <li class="d-flex align-items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-info mt-1"></i>
+                            <span>Bimbingan Tugas Akhir online terstruktur langsung dengan Dosen Pembimbing.</span>
+                        </li>
+                        <li class="d-flex align-items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-info mt-1"></i>
+                            <span>Pengarsipan draft revisi dokumen proposal & skripsi yang rapi dan aman.</span>
+                        </li>
+                        <li class="d-flex align-items-start gap-2">
+                            <i class="bi bi-check-circle-fill text-info mt-1"></i>
+                            <span>Booking jadwal bimbingan tatap muka secara efisien tanpa bentrok jadwal.</span>
+                        </li>
+                    </ul>
+                </div>
                 
                 <div class="w-70 border-top border-white border-opacity-25 pt-3 mb-4">
                     <small class="text-white-50 d-block">Sistem Bimbingan Tugas Akhir - Universitas Jember</small>
@@ -252,7 +413,7 @@
             <div class="col-md-6 col-lg-5 d-flex justify-content-center align-items-center">
                 <div class="login-container">
                     <div class="login-header">
-                        <i class="bi bi-box-arrow-in-right"></i>
+                        <img src="{{ url('/logo-unej.png') }}" alt="Logo UNEJ" style="height: 60px; width: auto; margin-bottom: 12px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));">
                         <h3>Masuk Sekarang</h3>
                         <p>SIM-TA UNEJ</p>
                     </div>
@@ -330,5 +491,59 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loader = document.getElementById('global-loader');
+            
+            // Hide loader after page is completely loaded
+            window.addEventListener('load', function() {
+                if (loader) {
+                    loader.classList.add('d-none');
+                }
+            });
+            
+            // Event delegation for links
+            document.body.addEventListener('click', function(e) {
+                const link = e.target.closest('a');
+                if (!link) return;
+
+                const href = link.getAttribute('href');
+                const target = link.getAttribute('target');
+
+                if (href && 
+                    href !== '#' && 
+                    !href.startsWith('#') && 
+                    !href.startsWith('javascript:') && 
+                    target !== '_blank' && 
+                    !e.defaultPrevented) {
+                    
+                    if (loader) {
+                        loader.classList.remove('d-none');
+                    }
+                }
+            });
+
+            // Event delegation for forms
+            document.body.addEventListener('submit', function(e) {
+                const form = e.target;
+                if (form.getAttribute('target') === '_blank') return;
+                
+                if (form.checkValidity && !form.checkValidity()) {
+                    return;
+                }
+
+                if (loader) {
+                    loader.classList.remove('d-none');
+                }
+            });
+
+            // Handle back/forward cache restore to hide loader
+            window.addEventListener('pageshow', function(event) {
+                if (loader) {
+                    loader.classList.add('d-none');
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -81,11 +81,31 @@ class MahasiswaController extends Controller
             });
 
         $status = $statusModel;
+        $dosens = \App\Models\User::where('role', 'dosen')->orderBy('name', 'asc')->get();
+
+        // OPTIMALISASI: Mengambil jadwal bimbingan mendatang di controller
+        $nowDate = \Carbon\Carbon::now()->toDateString();
+        $nowTime = \Carbon\Carbon::now()->format('H:i:s');
+        
+        $upcomingAppointments = \App\Models\Appointment::where('mahasiswa_id', $mahasiswaId)
+            ->where('status', 'approved')
+            ->where(function($query) use ($nowDate, $nowTime) {
+                $query->where('scheduled_date', '>', $nowDate)
+                      ->orWhere(function($q) use ($nowDate, $nowTime) {
+                          $q->where('scheduled_date', '=', $nowDate)
+                            ->where('scheduled_time', '>=', $nowTime);
+                      });
+            })
+            ->with('dosen')
+            ->orderBy('scheduled_date', 'asc')
+            ->orderBy('scheduled_time', 'asc')
+            ->take(5)
+            ->get();
 
         return view('Mahasiswa.dashboard', compact(
             'bimbingan', 'status', 'user',
             'totalBimbingan', 'bimbinganApproved',
-            'dosenPembimbing', 'riwayatBimbingan'
+            'dosenPembimbing', 'riwayatBimbingan', 'dosens', 'upcomingAppointments'
         ));
     }
 

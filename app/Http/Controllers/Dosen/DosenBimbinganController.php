@@ -191,14 +191,14 @@ class DosenBimbinganController extends Controller
     // Perjanjian Jadwal Temu (Appointments)
     public function appointmentRequests()
     {
-        $appointments = Appointment::where('dosen_id', Auth::id())->where('status', 'pending')->with('mahasiswa')->get();
-        return view('dosen.Bimbingan.appointments', compact('appointments'));
+        $pendingAppointments = Appointment::where('dosen_id', Auth::id())->where('status', 'pending')->with('mahasiswa')->get();
+        $approvedAppointments = Appointment::where('dosen_id', Auth::id())->where('status', 'approved')->with('mahasiswa')->get();
+        return view('dosen.Bimbingan.appointments', compact('pendingAppointments', 'approvedAppointments'));
     }
 
     public function mySchedule()
     {
-        $appointments = Appointment::where('dosen_id', Auth::id())->where('status', 'approved')->with('mahasiswa')->get();
-        return view('dosen.Bimbingan.my-schedule', compact('appointments'));
+        return redirect()->route('dosen.appointments.index');
     }
 
     public function approveAppointment($id)
@@ -209,9 +209,13 @@ class DosenBimbinganController extends Controller
 
     public function rejectAppointment(Request $request, $id)
     {
+        $validated = $request->validate([
+            'reason' => 'required|string|max:1000',
+        ]);
+
         Appointment::where('id', $id)->where('dosen_id', Auth::id())->update([
             'status'               => 'rejected',
-            'reason_for_rejection' => $request->reason,
+            'reason_for_rejection' => $validated['reason'],
         ]);
         return back()->with('success', 'Jadwal berhasil ditolak.');
     }

@@ -7,40 +7,77 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="icon" type="image/png" href="{{ url('/logo-unej.png') }}">
 
     <style>
         :root {
-            /* 🔵 Mengubah variabel tema agar sinkron dengan dashboard baru (Navy-Blue Theme) */
-            --theme-navy: #03045E;
-            --theme-blue: #0077B6;
-            --theme-cyan: #00B4D8;
+            --theme-navy: #02023e;
+            --theme-blue: #005f92;
+            --theme-dark-blue: #004b75;
             --theme-light: #f8f9fa;
-            --theme-navy-grad: linear-gradient(135deg, #03045E 0%, #0077B6 50%, #00B4D8 100%);
-            --theme-blue-grad: linear-gradient(135deg, #0077B6 0%, #00B4D8 100%);
+            --theme-navy-grad: linear-gradient(135deg, #02023e 0%, #005f92 100%);
+            --theme-blue-grad: linear-gradient(135deg, #005f92 0%, #004b75 100%);
         }
 
         body {
-            /* Background gradasi dinamis diselaraskan ke biru-navy */
-            background: linear-gradient(135deg, var(--theme-navy) 0%, var(--theme-blue) 50%, var(--theme-cyan) 100%);
+            background: linear-gradient(135deg, var(--theme-navy), var(--theme-blue), var(--theme-dark-blue), var(--theme-blue));
+            background-size: 300% 300%;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             padding: 20px 0;
-            animation: gradientShift 15s ease infinite;
+            animation: oceanWave 10s ease-in-out infinite;
+            position: relative;
         }
 
-        @keyframes gradientShift {
-            0% {
-                background: linear-gradient(135deg, var(--theme-navy) 0%, var(--theme-blue) 50%, var(--theme-cyan) 100%);
-            }
-            50% {
-                background: linear-gradient(135deg, var(--theme-cyan) 0%, var(--theme-navy) 50%, var(--theme-blue) 100%);
-            }
-            100% {
-                background: linear-gradient(135deg, var(--theme-navy) 0%, var(--theme-blue) 50%, var(--theme-cyan) 100%);
-            }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+            background-size: 24px 24px;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bg-glow-1 {
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            top: -150px;
+            right: -100px;
+            background: radial-gradient(circle, rgba(0, 180, 216, 0.25) 0%, transparent 70%);
+            z-index: 1;
+            pointer-events: none;
+            filter: blur(50px);
+        }
+
+        .bg-glow-2 {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            bottom: -200px;
+            left: -150px;
+            background: radial-gradient(circle, rgba(2, 2, 62, 0.4) 0%, transparent 70%);
+            z-index: 1;
+            pointer-events: none;
+            filter: blur(50px);
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes oceanWave {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .register-container {
@@ -314,9 +351,109 @@
                 padding: 25px;
             }
         }
+
+        /* Variasi Background Modern */
+        .floating-shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .shape-1 { width: 150px; height: 150px; top: 10%; left: 5%; animation-duration: 20s; animation-delay: 0s; }
+        .shape-2 { width: 250px; height: 250px; top: 60%; left: 15%; animation-duration: 25s; animation-delay: -5s; border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        .shape-3 { width: 100px; height: 100px; top: 20%; right: 10%; animation-duration: 15s; animation-delay: -2s; }
+        .shape-4 { width: 200px; height: 200px; bottom: 10%; right: 5%; animation-duration: 22s; animation-delay: -10s; border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+        .shape-5 { width: 80px; height: 80px; top: 40%; left: 50%; animation-duration: 18s; animation-delay: -8s; }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+
+        /* Global Loading Overlay */
+        .global-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(2, 2, 62, 0.85); /* Semi-transparent dark navy base */
+            backdrop-filter: blur(8px);
+            z-index: 99999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .global-loader.d-none {
+            display: none !important;
+        }
+
+        .loader-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+        }
+
+        /* Spinner design: fading gradient rotating ring styled in blue */
+        .loader-spinner {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, rgba(37, 99, 235, 0.05) 10%, #2563eb 50%, #3b82f6 100%);
+            -webkit-mask: radial-gradient(farthest-side, transparent 75%, #000 76%);
+            mask: radial-gradient(farthest-side, transparent 75%, #000 76%);
+            animation: spin-clockwise 1s linear infinite;
+        }
+
+        .loader-text {
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            animation: text-pulse 1.5s ease-in-out infinite;
+            text-transform: uppercase;
+        }
+
+        @keyframes spin-clockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes text-pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
+    <!-- Global Loader Overlay -->
+    <div id="global-loader" class="global-loader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <div class="loader-text">LOADING...</div>
+        </div>
+    </div>
+
+    <div class="bg-glow-1"></div>
+    <div class="bg-glow-2"></div>
+    
+    <!-- Floating Elements -->
+    <div class="floating-shape shape-1"></div>
+    <div class="floating-shape shape-2"></div>
+    <div class="floating-shape shape-3"></div>
+    <div class="floating-shape shape-4"></div>
+    <div class="floating-shape shape-5"></div>
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10 col-xl-9">
@@ -348,6 +485,18 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                             </div>
                         @endif
+
+                        <div class="alert alert-info border-0 shadow-sm mb-4" style="background-color: #e0f2fe; color: #0369a1; border-radius: 12px; border-left: 4px solid #0284c7 !important;">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="bi bi-info-circle-fill fs-5 mt-1"></i>
+                                <div>
+                                    <span class="fw-bold d-block">Panduan Registrasi SIM-TA:</span>
+                                    <span class="d-block small mt-1">• Halaman ini hanya diperuntukkan bagi pendaftaran akun **Mahasiswa**.</span>
+                                    <span class="d-block small mt-1">• Dosen dan Kepala Prodi tidak perlu mendaftar secara manual, silakan gunakan akun Anda untuk langsung login.</span>
+                                    <span class="d-block small mt-1">• Pastikan email Universitas Jember Anda aktif untuk menerima notifikasi bimbingan.</span>
+                                </div>
+                            </div>
+                        </div>
 
                         <form method="POST" action="{{ route('register') }}" novalidate>
                             @csrf
@@ -405,45 +554,17 @@
                                 </div>
 
                                 <div class="col-md-6 mb-3">
-                                    <label for="role" class="form-label">
-                                        Tipe Akun <span class="required">*</span>
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class="bi bi-shield-check"></i></span>
-                                        <select class="form-select @error('role') is-invalid @enderror"
-                                                id="role" name="role" required onchange="toggleNimNip()">
-                                            <option value="">-- Pilih Tipe Akun --</option>
-                                            <option value="mahasiswa" {{ old('role') == 'mahasiswa' ? 'selected' : '' }}>
-                                                Mahasiswa
-                                            </option>
-                                            <option value="dosen" {{ old('role') == 'dosen' ? 'selected' : '' }}>
-                                                Dosen
-                                            </option>
-
-                                        </select>
-                                        @error('role')
-                                            <span class="invalid-feedback">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div id="nim-nip-field" style="display: none;">
-                                <div class="mb-3">
                                     <label for="nim_nip" class="form-label">
-                                        NIM / NIP
+                                        NIM <span class="required">*</span>
                                     </label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-card-text"></i></span>
                                         <input type="text" class="form-control @error('nim_nip') is-invalid @enderror"
                                                id="nim_nip" name="nim_nip" value="{{ old('nim_nip') }}"
-                                               placeholder="Masukkan NIM atau NIP Anda">
+                                               placeholder="Masukkan NIM Anda" required>
                                         @error('nim_nip')
                                             <span class="invalid-feedback">{{ $message }}</span>
                                         @enderror
-                                    </div>
-                                    <div class="form-text">
-                                        <i class="bi bi-info-circle"></i> Nomor Induk Mahasiswa atau Nomor Induk Pegawai
                                     </div>
                                 </div>
                             </div>
@@ -514,20 +635,57 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function toggleNimNip() {
-            const role = document.getElementById('role').value;
-            const nimNipField = document.getElementById('nim-nip-field');
-
-            if (role === 'mahasiswa' || role === 'dosen') {
-                nimNipField.style.display = 'block';
-            } else {
-                nimNipField.style.display = 'none';
-            }
-        }
-
-        // Jalankan saat halaman dimuat
         document.addEventListener('DOMContentLoaded', function() {
-            toggleNimNip();
+            const loader = document.getElementById('global-loader');
+            
+            // Hide loader after page is completely loaded
+            window.addEventListener('load', function() {
+                if (loader) {
+                    loader.classList.add('d-none');
+                }
+            });
+            
+            // Event delegation for links
+            document.body.addEventListener('click', function(e) {
+                const link = e.target.closest('a');
+                if (!link) return;
+
+                const href = link.getAttribute('href');
+                const target = link.getAttribute('target');
+
+                if (href && 
+                    href !== '#' && 
+                    !href.startsWith('#') && 
+                    !href.startsWith('javascript:') && 
+                    target !== '_blank' && 
+                    !e.defaultPrevented) {
+                    
+                    if (loader) {
+                        loader.classList.remove('d-none');
+                    }
+                }
+            });
+
+            // Event delegation for forms
+            document.body.addEventListener('submit', function(e) {
+                const form = e.target;
+                if (form.getAttribute('target') === '_blank') return;
+                
+                if (form.checkValidity && !form.checkValidity()) {
+                    return;
+                }
+
+                if (loader) {
+                    loader.classList.remove('d-none');
+                }
+            });
+
+            // Handle back/forward cache restore to hide loader
+            window.addEventListener('pageshow', function(event) {
+                if (loader) {
+                    loader.classList.add('d-none');
+                }
+            });
         });
     </script>
 </body>

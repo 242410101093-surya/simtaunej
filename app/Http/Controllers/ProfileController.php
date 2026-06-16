@@ -73,21 +73,38 @@ class ProfileController extends Controller
      */
     public function updatePassword(Request $request)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'current_password' => 'required|current_password',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        // Update password
         /** @var User $user */
         $user = Auth::user();
 
-        $user->update([
-            'password' => Hash::make($validated['password'])
-        ]);
+        // 1. Handle Foto Profil upload
+        if ($request->hasFile('photo')) {
+            $request->validate([
+                'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-        return redirect()->route('profile.show')
-                       ->with('success', 'Password berhasil diubah!');
+            // Store the photo
+            $path = $request->file('photo')->store('profile-photos', 'public');
+
+            // Delete old photo if it exists
+            if ($user->photo && \Illuminate\Support\Facades\Storage::disk('public')->exists($user->photo)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($user->photo);
+            }
+
+            $user->update(['photo' => $path]);
+        }
+
+        // 2. Handle Password update (optional, only if fields are filled)
+        if ($request->filled('current_password') || $request->filled('password')) {
+            $request->validate([
+                'current_password' => 'required|current_password',
+                'password' => 'required|string|min:6|confirmed',
+            ]);
+
+            $user->update([
+                'password' => Hash::make($request->password)
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
     }
 }

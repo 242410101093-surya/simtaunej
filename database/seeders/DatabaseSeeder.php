@@ -14,32 +14,41 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Buat Admin
-        $admin = User::create([
-            'name' => 'Admin Prodi Informatika',
-            'email' => 'admin@unej.ac.id',
-            'password' => Hash::make('password'),
+        // 1. Buat Kepala Prodi (Admin)
+        $kaprodiSI = User::create([
+            'name' => 'Kepala Prodi Sistem Informasi',
+            'email' => 'sisteminformasi@mail.unej.ac.id',
+            'password' => Hash::make('admin123'),
             'role' => 'admin',
-            'nim_nip' => 'ADM001',
+            'nim_nip' => 'KPR001',
             'phone' => '081234567890',
         ]);
 
-        $admin2 = User::create([
-            'name' => 'Admin UNEJ',
-            'email' => 'adminunej@gmail.com',
-            'password' => Hash::make('password'),
+        $kaprodiTI = User::create([
+            'name' => 'Kepala Prodi Teknologi Informasi',
+            'email' => 'teknologiinformasi@mail.unej.ac.id',
+            'password' => Hash::make('admin123'),
             'role' => 'admin',
-            'nim_nip' => 'ADM002',
+            'nim_nip' => 'KPR002',
             'phone' => '081234567891',
         ]);
 
-        echo "✓ Admin created (2)\n";
+        $kaprodiIF = User::create([
+            'name' => 'Kepala Prodi Informatika',
+            'email' => 'informatika@mail.unej.ac.id',
+            'password' => Hash::make('admin123'),
+            'role' => 'admin',
+            'nim_nip' => 'KPR003',
+            'phone' => '081234567892',
+        ]);
+
+        echo "✓ Kepala Prodi (Admin) created (3)\n";
 
         // 2. Buat Dosen
         $dosen1 = User::create([
             'name' => 'Dr. Budi Santoso, M.T.',
-            'email' => 'budi@unej.ac.id',
-            'password' => Hash::make('password'),
+            'email' => 'budi@mail.unej.ac.id',
+            'password' => Hash::make('dosen1234'),
             'role' => 'dosen',
             'nim_nip' => '197001011998031001',
             'phone' => '081234567891',
@@ -47,8 +56,8 @@ class DatabaseSeeder extends Seeder
 
         $dosen2 = User::create([
             'name' => 'Dr. Siti Nurhaliza, M.Kom.',
-            'email' => 'siti@unej.ac.id',
-            'password' => Hash::make('password'),
+            'email' => 'siti@mail.unej.ac.id',
+            'password' => Hash::make('dosen1234'),
             'role' => 'dosen',
             'nim_nip' => '197505102000032001',
             'phone' => '081234567892',
@@ -56,8 +65,8 @@ class DatabaseSeeder extends Seeder
 
         $dosen3 = User::create([
             'name' => 'Ir. Ahmad Yani, M.T.',
-            'email' => 'ahmad.yani@unej.ac.id',
-            'password' => Hash::make('password'),
+            'email' => 'ahmad.yani@mail.unej.ac.id',
+            'password' => Hash::make('dosen1234'),
             'role' => 'dosen',
             'nim_nip' => '198003152005011001',
             'phone' => '081234567893',
@@ -143,15 +152,15 @@ class DatabaseSeeder extends Seeder
         echo "========================================\n";
         echo "Login Credentials:\n";
         echo "----------------------------------------\n";
-        echo "ADMIN:\n";
-        echo "Email: admin@unej.ac.id\n";
-        echo "Password: password\n";
-        echo "Email: adminunej@gmail.com\n";
-        echo "Password: password\n";
+        echo "KAPRODI (ADMIN):\n";
+        echo "1. SI: sisteminformasi@mail.unej.ac.id\n";
+        echo "2. TI: teknologiinformasi@mail.unej.ac.id\n";
+        echo "3. IF: informatika@mail.unej.ac.id\n";
+        echo "Password: admin123\n";
         echo "----------------------------------------\n";
         echo "DOSEN:\n";
-        echo "Email: budi@unej.ac.id\n";
-        echo "Password: password\n";
+        echo "Email: budi@mail.unej.ac.id\n";
+        echo "Password: dosen1234\n";
         echo "----------------------------------------\n";
         echo "MAHASISWA:\n";
         echo "Email: ahmad@students.unej.ac.id\n";

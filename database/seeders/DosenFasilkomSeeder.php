@@ -69,13 +69,14 @@ class DosenFasilkomSeeder extends Seeder
         ];
 
         foreach ($dosens as $dsn) {
+            $email = str_replace('@unej.ac.id', '@mail.unej.ac.id', $dsn['email']);
             User::updateOrCreate(
                 ['nim_nip' => $dsn['nim_nip']], // Supaya tidak duplikat kalau dijalankan ulang
                 [
                     'name' => $dsn['name'],
-                    'email' => $dsn['email'],
+                    'email' => $email,
                     'role' => 'dosen',
-                    'password' => Hash::make($dsn['nim_nip']), // Password awal pake NIP masing-masing
+                    'password' => Hash::make('dosen1234'), // Password default dosen1234
                 ]
             );
         }

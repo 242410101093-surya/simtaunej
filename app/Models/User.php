@@ -22,6 +22,8 @@ class User extends Authenticatable
         'role',
         'nim_nip',
         'phone',
+        'photo',
+        'prodi_asal',
     ];
 
     // Field yang disembunyikan saat serialisasi

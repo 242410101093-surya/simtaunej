@@ -26,10 +26,8 @@ class DosenController extends Controller
             ->where('dosen_id', $dosenId)
             ->count();
 
-        // PERBAIKAN 2: Mengambil bimbingan pending melalui relasi mahasiswa_dosen (karena di tabel bimbingans tidak ada dosen_id)
-        $bimbinganPending = Bimbingan::whereIn('mahasiswa_id', function($query) use ($dosenId) {
-                $query->select('mahasiswa_id')->from('mahasiswa_dosen')->where('dosen_id', $dosenId);
-            })
+        // OPTIMALISASI: Mengambil bimbingan pending langsung menggunakan dosen_id (kolom terindeks)
+        $bimbinganPending = Bimbingan::where('dosen_id', $dosenId)
             ->where('status', 'pending')
             ->with(['mahasiswa', 'submissionFiles'])
             ->latest('created_at')
@@ -45,10 +43,8 @@ class DosenController extends Controller
                 $query->select('mahasiswa_id')->from('mahasiswa_dosen')->where('dosen_id', $dosenId);
             })->with(['statusMahasiswa'])->get();
 
-        // PERBAIKAN 4: Riwayat bimbingan terbaru difilter berdasarkan mahasiswa bimbingan dosen ini
-        $recentBimbingan = Bimbingan::whereIn('mahasiswa_id', function($query) use ($dosenId) {
-                $query->select('mahasiswa_id')->from('mahasiswa_dosen')->where('dosen_id', $dosenId);
-            })
+        // OPTIMALISASI: Mengambil riwayat bimbingan langsung menggunakan dosen_id
+        $recentBimbingan = Bimbingan::where('dosen_id', $dosenId)
             ->with(['mahasiswa', 'submissionFiles.comments'])
             ->latest('created_at')
             ->limit(10)
@@ -59,9 +55,28 @@ class DosenController extends Controller
             ->with('mahasiswa')
             ->get();
 
+        // OPTIMALISASI: Mengambil jadwal bimbingan mendatang langsung di controller
+        $nowDate = \Carbon\Carbon::now()->toDateString();
+        $nowTime = \Carbon\Carbon::now()->format('H:i:s');
+        
+        $upcomingAppointments = Appointment::where('dosen_id', $dosenId)
+            ->where('status', 'approved')
+            ->where(function($query) use ($nowDate, $nowTime) {
+                $query->where('scheduled_date', '>', $nowDate)
+                      ->orWhere(function($q) use ($nowDate, $nowTime) {
+                          $q->where('scheduled_date', '=', $nowDate)
+                            ->where('scheduled_time', '>=', $nowTime);
+                      });
+            })
+            ->with('mahasiswa')
+            ->orderBy('scheduled_date', 'asc')
+            ->orderBy('scheduled_time', 'asc')
+            ->take(5)
+            ->get();
+
         return view('dosen.dashboard', compact(
             'totalMahasiswa', 'pendingReview', 'bimbinganPending',
-            'mahasiswaBimbingan', 'recentBimbingan', 'appointments'
+            'mahasiswaBimbingan', 'recentBimbingan', 'appointments', 'upcomingAppointments'
         ));
     }
 
@@ -261,10 +276,8 @@ class DosenController extends Controller
     {
         $dosenId = Auth::id();
 
-        // PERBAIKAN 9: Perbaikan query pencarian riwayat bimbingan lewat sub-query mahasiswa_dosen
-        $bimbingan = Bimbingan::whereIn('mahasiswa_id', function($query) use ($dosenId) {
-                $query->select('mahasiswa_id')->from('mahasiswa_dosen')->where('dosen_id', $dosenId);
-            })
+        // OPTIMALISASI: Query langsung menggunakan dosen_id (kolom terindeks)
+        $bimbingan = Bimbingan::where('dosen_id', $dosenId)
             ->with(['mahasiswa', 'submissionFiles'])
             ->latest('created_at')
             ->paginate(20);

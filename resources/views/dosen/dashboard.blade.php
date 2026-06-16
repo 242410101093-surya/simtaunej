@@ -11,59 +11,50 @@
 
 <div class="row g-3 mb-4">
     <div class="col-md-6">
-        <div class="card text-center h-100 border-0 shadow-sm">
-            <div class="card-body">
-                <div class="mb-3">
-                    <i class="bi bi-people" style="font-size: 3rem; color: var(--unej-red);"></i>
+        <div class="card text-center h-100 border-0 shadow-sm" style="border-radius: 14px; background: linear-gradient(135deg, #ffffff 0%, #FDF2F2 100%); border-left: 5px solid var(--unej-red) !important; padding: 20px !important;">
+            <div class="card-body py-2">
+                <div class="d-inline-flex p-3 bg-white shadow-sm rounded-3 text-danger mb-3" style="color: var(--unej-red) !important;">
+                    <i class="bi bi-people fs-3"></i>
                 </div>
-                <h2 class="fw-bold mb-1">{{ $totalMahasiswa }}</h2>
-                <p class="text-muted mb-0">Mahasiswa Bimbingan</p>
-                <a href="{{ route('dosen.mahasiswa.index') }}" class="btn btn-sm btn-unej-primary mt-2">
-                    <i class="bi bi-eye"></i> Lihat Semua
+                <h2 class="fw-bold text-dark mb-1">{{ $totalMahasiswa }}</h2>
+                <p class="text-secondary small mb-3 fw-semibold">Mahasiswa Bimbingan Anda</p>
+                <a href="{{ route('dosen.mahasiswa.index') }}" class="btn btn-sm btn-unej-primary">
+                    <i class="bi bi-eye me-1"></i> Lihat Semua
                 </a>
             </div>
         </div>
     </div>
 
     <div class="col-md-6">
-        <div class="card text-center h-100 border-0 shadow-sm">
-            <div class="card-body">
-                <div class="mb-3">
-                    <i class="bi bi-clock-history" style="font-size: 3rem; color: var(--unej-yellow);"></i>
+        <div class="card text-center h-100 border-0 shadow-sm" style="border-radius: 14px; background: linear-gradient(135deg, #ffffff 0%, #FFFBEF 100%); border-left: 5px solid var(--unej-yellow) !important; padding: 20px !important;">
+            <div class="card-body py-2">
+                <div class="d-inline-flex p-3 bg-white shadow-sm rounded-3 text-warning mb-3" style="color: var(--unej-yellow) !important;">
+                    <i class="bi bi-clock-history fs-3"></i>
                 </div>
-                <h2 class="fw-bold mb-1">{{ $pendingReview }}</h2>
-                <p class="text-muted mb-0">Menunggu Review Berkas</p>
+                <h2 class="fw-bold text-dark mb-1">{{ $pendingReview }}</h2>
+                <p class="text-secondary small mb-3 fw-semibold">Berkas Menunggu Review</p>
                 @if($pendingReview > 0)
-                    <span class="badge bg-danger mt-2">Perlu Perhatian!</span>
+                    <span class="badge bg-danger px-3 py-1.5 rounded-pill shadow-sm" style="font-weight:600;">
+                        <i class="bi bi-exclamation-circle me-1"></i> Perlu Review Segera
+                    </span>
+                @else
+                    <span class="badge bg-success-subtle text-success px-3 py-1.5 rounded-pill border border-success-subtle fw-semibold">
+                        <i class="bi bi-check-circle-fill me-1"></i> Selesai Semua
+                    </span>
                 @endif
             </div>
         </div>
     </div>
 </div>
 
-@php
-    // Perbaikan query: Ambil data appointment bimbingan dengan id murni (tanpa strval)
-    $incomingAppointments = DB::table('appointments')
-        ->join('users', 'appointments.mahasiswa_id', '=', 'users.id')
-        ->where('appointments.dosen_id', auth()->id())
-        ->where('appointments.status', 'pending')
-        ->select(
-            'appointments.*', 
-            'users.name as mahasiswa_name', 
-            'users.nim_nip as mahasiswa_nim'
-        )
-        ->orderBy('appointments.scheduled_date', 'asc')
-        ->get();
-@endphp
-
 <div class="card mb-4 border-warning border-2 shadow-sm">
     <div class="card-header bg-warning text-dark">
         <h5 class="mb-0 fw-bold">
-            <i class="bi bi-calendar-event-fill"></i> Permintaan Jadwal Bimbingan Baru ({{ $incomingAppointments->count() }})
+            <i class="bi bi-calendar-event-fill"></i> Permintaan Jadwal Bimbingan Baru ({{ $appointments->count() }})
         </h5>
     </div>
     <div class="card-body">
-        @if($incomingAppointments->count() > 0)
+        @if($appointments->count() > 0)
             <div class="table-responsive">
                 <table class="table table-hover align-middle bg-white rounded shadow-sm">
                     <thead class="table-light">
@@ -75,11 +66,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($incomingAppointments as $app)
+                        @foreach($appointments as $app)
                             <tr>
                                 <td>
-                                    <strong>{{ $app->mahasiswa_name }}</strong><br>
-                                    <small class="text-muted">{{ $app->mahasiswa_nim }}</small>
+                                    <strong>{{ $app->mahasiswa->name }}</strong><br>
+                                    <small class="text-muted">{{ $app->mahasiswa->nim_nip }}</small>
                                 </td>
                                 <td>
                                     <span class="badge bg-secondary"><i class="bi bi-calendar3"></i> {{ $app->scheduled_date }}</span><br>
@@ -265,37 +256,31 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-12">
-                <h6 class="mb-3">Jadwal Mendatang Hari Ini</h6>
-                @php
-                    $nowTime  = \Carbon\Carbon::now();
-                    $todayAppointments = \App\Models\Appointment::where('dosen_id', auth()->id())
-                        ->where('scheduled_date', today())
-                        ->where('status', 'approved')
-                        ->whereRaw("scheduled_time >= ?" , [$nowTime->format('H:i:s')])
-                        ->with('mahasiswa')
-                        ->orderBy('scheduled_time')
-                        ->get();
-                @endphp
-                @if($todayAppointments->count() > 0)
-                    @foreach($todayAppointments as $appointment)
+                <h6 class="mb-3">Jadwal Bimbingan Mendatang</h6>
+                @if($upcomingAppointments->count() > 0)
+                    @foreach($upcomingAppointments as $appointment)
                         @php
-                            $dateOnly   = \Carbon\Carbon::parse($appointment->scheduled_date)->toDateString();
+                            $isToday = \Carbon\Carbon::parse($appointment->scheduled_date)->isToday();
+                            $dateOnly = \Carbon\Carbon::parse($appointment->scheduled_date)->toDateString();
                             $jadwalTime = \Carbon\Carbon::parse($dateOnly . ' ' . $appointment->scheduled_time);
-                            $minsLeft   = $nowTime->diffInMinutes($jadwalTime, false);
+                            $minsLeft = \Carbon\Carbon::now()->diffInMinutes($jadwalTime, false);
                         @endphp
-                        <div class="card mb-2 border-start border-3 {{ $minsLeft <= 30 ? 'border-warning' : 'border-primary' }}">
+                        <div class="card mb-2 border-start border-3 {{ ($isToday && $minsLeft <= 60 && $minsLeft > 0) ? 'border-warning' : 'border-primary' }}">
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <strong>{{ \Carbon\Carbon::parse($appointment->scheduled_time)->format('H:i') }}</strong>
+                                        <strong>{{ \Carbon\Carbon::parse($appointment->scheduled_date)->format('d M Y') }}</strong> <span class="text-muted mx-1">|</span>
+                                        <strong>{{ \Carbon\Carbon::parse($appointment->scheduled_time)->format('H:i') }} WIB</strong>
                                         <br>
                                         <small class="text-muted">{{ $appointment->mahasiswa->name }}</small>
                                     </div>
                                     <div class="d-flex flex-column align-items-end gap-1">
-                                        @if($minsLeft <= 30)
-                                            <span class="badge bg-warning text-dark"><i class="bi bi-alarm"></i> Segera ({{ $minsLeft }} menit)</span>
-                                        @else
+                                        @if($isToday && $minsLeft <= 60 && $minsLeft > 0)
+                                            <span class="badge bg-warning text-dark"><i class="bi bi-alarm"></i> Segera ({{ $minsLeft }} mnt)</span>
+                                        @elseif($isToday)
                                             <span class="badge bg-primary">Hari Ini</span>
+                                        @else
+                                            <span class="badge bg-info text-dark">Mendatang</span>
                                         @endif
                                     </div>
                                 </div>
@@ -305,7 +290,7 @@
                 @else
                     <div class="text-center py-3">
                         <i class="bi bi-calendar-x text-muted" style="font-size: 2rem;"></i>
-                        <p class="text-muted mb-0">Tidak ada jadwal bimbingan mendatang hari ini</p>
+                        <p class="text-muted mb-0">Tidak ada jadwal bimbingan mendatang</p>
                     </div>
                 @endif
             </div>

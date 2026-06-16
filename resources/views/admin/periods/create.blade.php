@@ -1,40 +1,98 @@
 @extends('layouts.app')
 
+@section('title', 'Tambah Periode Jadwal')
+
 @section('content')
-<div class="container mt-4">
-    <h4>Tambah Periode Bimbingan</h4>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+        <i class="bi bi-plus-circle-fill text-primary me-2"></i>
+        <span style="color: #0d1b2a; font-weight: 700;">Tambah Periode Jadwal Baru</span>
+    </h2>
+    <a href="{{ route('admin.periods') }}" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+        <i class="bi bi-arrow-left"></i> Kembali
+    </a>
+</div>
 
-    <div class="card shadow-sm mt-3">
-        <div class="card-body">
-            <form action="{{ route('admin.periods.store') }}" method="POST">
-                @csrf
+@if($errors->any())
+    <div class="alert alert-danger mb-4">
+        <ul class="mb-0">
+            @foreach($errors->all() as $e)
+                <li>{{ $e }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label>Nama Periode</label>
-                        <input type="text" name="period_name"
-                               class="form-control" required>
-                    </div>
+<div class="card shadow-sm border-0" style="border-radius: 1rem; max-width: 700px;">
+    <div class="card-body p-4">
+        <form action="{{ route('admin.periods.store') }}" method="POST">
+            @csrf
 
-                    <div class="col-md-3 mb-3">
-                        <label>Tanggal Mulai</label>
-                        <input type="date" name="start_date" class="form-control">
-                    </div>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Nama Periode <span class="text-danger">*</span></label>
+                <input type="text" name="period_name" class="form-control @error('period_name') is-invalid @enderror"
+                       placeholder="Contoh: Sempro Gelombang 1"
+                       value="{{ old('period_name') }}" required>
+                @error('period_name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
-                    <div class="col-md-3 mb-3">
-                        <label>Tanggal Akhir</label>
-                        <input type="date" name="end_date" class="form-control">
-                    </div>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Kategori Jadwal <span class="text-danger">*</span></label>
+                <select name="jenis" class="form-select @error('jenis') is-invalid @enderror" required>
+                    <option value="">-- Pilih Kategori --</option>
+                    <option value="Sempro" {{ old('jenis') === 'Sempro' ? 'selected' : '' }}>Sempro (Seminar Proposal)</option>
+                    <option value="Semhas" {{ old('jenis') === 'Semhas' ? 'selected' : '' }}>Semhas (Seminar Hasil)</option>
+                    <option value="Sidang Skripsi" {{ old('jenis') === 'Sidang Skripsi' ? 'selected' : '' }}>Sidang Skripsi</option>
+                </select>
+                @error('jenis')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Tanggal Mulai <span class="text-danger">*</span></label>
+                    <input type="date" name="start_date" class="form-control @error('start_date') is-invalid @enderror"
+                           value="{{ old('start_date') }}" required>
+                    @error('start_date')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
-
-                <div class="mb-3">
-                    <label>Deskripsi</label>
-                    <textarea class="form-control" name="description"></textarea>
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Tanggal Selesai <span class="text-danger">*</span></label>
+                    <input type="date" name="end_date" class="form-control @error('end_date') is-invalid @enderror"
+                           value="{{ old('end_date') }}" required>
+                    @error('end_date')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
+            </div>
 
-                <button class="btn btn-success">Simpan</button>
-            </form>
-        </div>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Status</label>
+                <select name="is_active" class="form-select">
+                    <option value="1" selected>Aktif</option>
+                    <option value="0">Nonaktif</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Deskripsi</label>
+                <textarea class="form-control" name="description" rows="3"
+                          placeholder="Deskripsi tambahan mengenai periode ini (opsional)">{{ old('description') }}</textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="bi bi-save me-1"></i> Simpan Periode
+                </button>
+                <a href="{{ route('admin.periods') }}" class="btn btn-secondary px-4">
+                    Batal
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 @endsection

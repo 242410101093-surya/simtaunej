@@ -11,6 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Daftarkan middleware global untuk keamanan
+        $middleware->append(\App\Http\Middleware\AddSecurityHeaders::class);
+
         // Daftarkan middleware alias
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,

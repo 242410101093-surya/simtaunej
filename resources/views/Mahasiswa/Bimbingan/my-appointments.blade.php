@@ -57,11 +57,13 @@
                                             <td>
                                                 @if($appointment->status === 'pending')
                                                     <form action="{{ route('mahasiswa.appointments.cancel', $appointment->id) }}"
-                                                          method="POST" class="d-inline"
-                                                          onsubmit="return confirm('Apakah Anda yakin ingin membatalkan booking ini?')">
+                                                          method="POST" class="d-inline">
                                                         @csrf
                                                         @method('POST')
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                        <button type="button" class="btn btn-sm btn-outline-danger btn-confirm"
+                                                                data-message="Apakah Anda yakin ingin membatalkan booking ini?"
+                                                                data-title="Batalkan Booking Bimbingan"
+                                                                data-confirm-text="Ya, Batalkan">
                                                             <i class="bi bi-x-circle"></i> Batal
                                                         </button>
                                                     </form>
@@ -75,25 +77,6 @@
                                             </td>
                                         </tr>
 
-                                        @if($appointment->status === 'rejected' && $appointment->reason_for_rejection)
-                                            <!-- Modal for rejection reason -->
-                                            <div class="modal fade" id="reasonModal{{ $appointment->id }}" tabindex="-1">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title">Alasan Penolakan</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>{{ $appointment->reason_for_rejection }}</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endif
                                     @endforeach
                                 </tbody>
                             </table>
@@ -113,4 +96,30 @@
         </div>
     </div>
 </div>
+
+@if($appointments->count() > 0)
+    <!-- Render Reason Modals Outside all table and card containers to prevent layout shifts and shaking -->
+    @foreach($appointments as $appointment)
+        @if($appointment->status === 'rejected' && $appointment->reason_for_rejection)
+            <div class="modal fade" id="reasonModal{{ $appointment->id }}" tabindex="-1" aria-labelledby="reasonModalLabel{{ $appointment->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content shadow-lg border-0" style="border-radius: 16px; overflow: hidden;">
+                        <div class="modal-header text-white" style="background: linear-gradient(135deg, #02023e 0%, #005f92 100%);">
+                            <h5 class="modal-title fw-bold" id="reasonModalLabel{{ $appointment->id }}">Alasan Penolakan</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1) grayscale(1) brightness(2);"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <div class="p-3 bg-light rounded-3 border">
+                                <p class="text-dark mb-0" style="white-space: pre-line;">{{ $appointment->reason_for_rejection }}</p>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-light p-4 border-top">
+                            <button type="button" class="btn btn-secondary px-4 py-2" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 600;">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endforeach
+@endif
 @endsection

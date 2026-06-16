@@ -13,6 +13,16 @@
     .ui-icon-main {
         color: #0077b6 !important;
     }
+    .bg-gradient-blue {
+        background: linear-gradient(to right, #03045e, #0077b6) !important;
+        color: #ffffff !important;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .bg-gradient-blue:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(3, 4, 94, 0.3) !important;
+        color: #ffffff !important;
+    }
     
     /* State Tab ACTIVE */
     .tab-active {
@@ -54,18 +64,26 @@
     </h2>
 </div>
 
-<div class="mb-4 position-relative" style="max-width: 400px;">
-    <span class="position-absolute top-50 translate-middle-y start-0 ps-3 text-muted" style="z-index: 5;">
-        <i class="bi bi-search text-secondary"></i>
-    </span>
-    <input 
-        type="text" 
-        id="searchDosenInput"
-        placeholder="Cari nama dosen atau NIP..." 
-        class="form-control"
-        style="padding-left: 2.5rem; border-radius: 0.5rem; height: 42px;"
-        autocomplete="off"
-    />
+<div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="position-relative flex-grow-1" style="max-width: 450px;">
+        <span class="position-absolute top-50 translate-middle-y start-0 ps-3 text-muted" style="z-index: 5;">
+            <i class="bi bi-search fs-6 text-primary"></i>
+        </span>
+        <input 
+            type="text" 
+            id="searchDosenInput"
+            placeholder="Ketik nama atau NIP untuk mencari dosen..." 
+            class="form-control bg-white shadow-sm"
+            style="padding-left: 2.75rem; border-radius: 0.75rem; height: 46px; border: 1px solid rgba(0,0,0,0.08); font-size: 0.95rem; transition: all 0.2s;"
+            autocomplete="off"
+            onfocus="this.style.borderColor='#0077b6'; this.style.boxShadow='0 0 0 3px rgba(0,119,182,0.15)'"
+            onblur="this.style.borderColor='rgba(0,0,0,0.08)'; this.style.boxShadow='0 .125rem .25rem rgba(0,0,0,.075)'"
+        />
+    </div>
+    <button data-bs-toggle="modal" data-bs-target="#modalCreateDosen" class="btn text-white bg-gradient-blue shadow-sm d-flex align-items-center gap-2"
+       style="border-radius: 0.75rem; padding: 10px 20px; font-weight: 500;">
+        <i class="bi bi-person-plus-fill"></i> <span>Tambah Akun Dosen Baru</span>
+    </button>
 </div>
 
 <div class="card shadow-sm border-0 mb-4" style="border-radius: 1rem;">
@@ -286,4 +304,66 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 </script>
+
+<!-- Modal Create Dosen -->
+<div class="modal fade" id="modalCreateDosen" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 1rem;">
+            <div class="modal-header bg-light border-bottom-0" style="border-radius: 1rem 1rem 0 0;">
+                <h5 class="modal-title fw-bold text-dark"><i class="bi bi-person-plus-fill text-primary me-2"></i> Tambah Akun Dosen Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ route('admin.dosen.store') }}">
+                @csrf
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Program Studi <span class="text-danger">*</span></label>
+                        <select name="prodi_asal" class="form-select" required>
+                            <option value="">-- Pilih Program Studi --</option>
+                            <option value="Sistem Informasi">Sistem Informasi (SI)</option>
+                            <option value="Teknologi Informasi">Teknologi Informasi (TI)</option>
+                            <option value="Informatika">Informatika (IF)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nama Lengkap & Gelar <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="Contoh: Dr. Budi Santoso, M.T." required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">NIP / NIK <span class="text-danger">*</span></label>
+                        <input type="text" name="nim_nip" class="form-control" placeholder="Contoh: 197001011998031001" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" class="form-control" placeholder="dosen@unej.ac.id" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">No. Handphone</label>
+                            <input type="text" name="phone" class="form-control" placeholder="Opsional">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold">Password Default <span class="text-danger">*</span></label>
+                            <input type="password" name="password" class="form-control" required minlength="6">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 pt-0 p-4">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary px-4">Simpan Data Dosen</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@if($errors->any())
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var createModal = new bootstrap.Modal(document.getElementById('modalCreateDosen'));
+    createModal.show();
+});
+</script>
+@endif
+
 @endsection

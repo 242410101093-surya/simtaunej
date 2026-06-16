@@ -1,60 +1,68 @@
 {{-- File: resources/views/admin/dashboard.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Dashboard Admin')
+@section('title', 'Dashboard Kepala Prodi')
 
 @section('content')
 <div class="mb-4">
-    <h2><i class="bi bi-speedometer2"></i> Dashboard Admin Prodi</h2>
-    <p class="text-muted">Selamat datang, {{ auth()->user()->name }}</p>
+    <h2><i class="bi bi-speedometer2"></i> Dashboard Kepala Prodi
+        @if(!empty($adminProdi))
+            <span class="badge ms-2 fw-semibold" style="background: linear-gradient(135deg, #03045e, #0077b6); font-size: 0.7rem; border-radius: 8px; padding: 6px 14px; vertical-align: middle;">{{ $adminProdi }}</span>
+        @endif
+    </h2>
+    <p class="text-muted">Selamat datang, {{ auth()->user()->name }}
+        @if(!empty($adminProdi))
+            — Menampilkan data mahasiswa <strong>{{ $adminProdi }}</strong>
+        @endif
+    </p>
 </div>
 
 <!-- Statistik Cards -->
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card text-center h-100 border-0 shadow-sm">
-            <div class="card-body">
-                <div class="mb-3">
-                    <i class="bi bi-people-fill" style="font-size: 3rem; color: var(--unej-red);"></i>
+        <div class="card text-center h-100 border-0 shadow-sm" style="border-radius: 14px; background: linear-gradient(135deg, #ffffff 0%, #FDF2F2 100%); border-left: 4px solid var(--unej-red) !important; padding: 20px !important;">
+            <div class="card-body py-2">
+                <div class="d-inline-flex p-3 bg-white shadow-sm rounded-3 text-danger mb-3" style="color: var(--unej-red) !important;">
+                    <i class="bi bi-people-fill fs-3"></i>
                 </div>
-                <h2 class="fw-bold mb-1">{{ $totalMahasiswa }}</h2>
-                <p class="text-muted mb-0">Total Mahasiswa</p>
+                <h2 class="fw-bold text-dark mb-1">{{ $totalMahasiswa }}</h2>
+                <p class="text-secondary small mb-0 fw-semibold">Total Mahasiswa{{ !empty($adminProdi) ? ' (' . $adminProdi . ')' : '' }}</p>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card text-center h-100 border-0 shadow-sm">
-            <div class="card-body">
-                <div class="mb-3">
-                    <i class="bi bi-person-badge-fill" style="font-size: 3rem; color: var(--unej-yellow);"></i>
+        <div class="card text-center h-100 border-0 shadow-sm" style="border-radius: 14px; background: linear-gradient(135deg, #ffffff 0%, #FFFBEF 100%); border-left: 4px solid var(--unej-yellow) !important; padding: 20px !important;">
+            <div class="card-body py-2">
+                <div class="d-inline-flex p-3 bg-white shadow-sm rounded-3 text-warning mb-3" style="color: var(--unej-yellow) !important;">
+                    <i class="bi bi-person-badge-fill fs-3"></i>
                 </div>
-                <h2 class="fw-bold mb-1">{{ $totalDosen }}</h2>
-                <p class="text-muted mb-0">Total Dosen</p>
+                <h2 class="fw-bold text-dark mb-1">{{ $totalDosen }}</h2>
+                <p class="text-secondary small mb-0 fw-semibold">Total Dosen</p>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card text-center h-100 border-0 shadow-sm">
-            <div class="card-body">
-                <div class="mb-3">
-                    <i class="bi bi-file-earmark-text-fill" style="font-size: 3rem; color: var(--unej-green);"></i>
+        <div class="card text-center h-100 border-0 shadow-sm" style="border-radius: 14px; background: linear-gradient(135deg, #ffffff 0%, #ECFDF5 100%); border-left: 4px solid var(--unej-green) !important; padding: 20px !important;">
+            <div class="card-body py-2">
+                <div class="d-inline-flex p-3 bg-white shadow-sm rounded-3 text-success mb-3" style="color: var(--unej-green) !important;">
+                    <i class="bi bi-file-earmark-text-fill fs-3"></i>
                 </div>
-                <h2 class="fw-bold mb-1">{{ $totalBimbingan }}</h2>
-                <p class="text-muted mb-0">Total Bimbingan</p>
+                <h2 class="fw-bold text-dark mb-1">{{ $totalBimbingan }}</h2>
+                <p class="text-secondary small mb-0 fw-semibold">Total Bimbingan</p>
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
-        <div class="card text-center h-100 border-0 shadow-sm">
-            <div class="card-body">
-                <div class="mb-3">
-                    <i class="bi bi-trophy-fill" style="font-size: 3rem; color: var(--unej-green);"></i>
+        <div class="card text-center h-100 border-0 shadow-sm" style="border-radius: 14px; background: linear-gradient(135deg, #ffffff 0%, #EFF6FF 100%); border-left: 4px solid var(--unej-blue) !important; padding: 20px !important;">
+            <div class="card-body py-2">
+                <div class="d-inline-flex p-3 bg-white shadow-sm rounded-3 text-primary mb-3" style="color: var(--unej-blue) !important;">
+                    <i class="bi bi-trophy-fill fs-3"></i>
                 </div>
-                <h2 class="fw-bold mb-1">{{ $mahasiswaLayakSidang }}</h2>
-                <p class="text-muted mb-0">Layak Sidang</p>
+                <h2 class="fw-bold text-dark mb-1">{{ $mahasiswaLayakSidang }}</h2>
+                <p class="text-secondary small mb-0 fw-semibold">Layak Sidang</p>
             </div>
         </div>
     </div>

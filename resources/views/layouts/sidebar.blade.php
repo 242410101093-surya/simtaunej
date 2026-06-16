@@ -58,7 +58,7 @@
                          style="cursor: pointer;" 
                          onclick="window.top.location.href='{{ route('admin.dashboard') }}';">
                         <i class="bi bi-speedometer2 me-3 fs-5"></i>
-                        <span>Dashboard Admin</span>
+                        <span>Dashboard Kepala Prodi</span>
                     </div>
                 </li>
                 <li class="nav-item">
