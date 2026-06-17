@@ -83,7 +83,7 @@
             </a>
         </div>
 
-        @if(isset($submissions) && $submissions->count())
+        @if($bimbingan->submissionFiles && $bimbingan->submissionFiles->count())
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
@@ -97,7 +97,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($submissions as $index => $s)
+                        @foreach($bimbingan->submissionFiles as $index => $s)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>

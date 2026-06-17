@@ -133,9 +133,8 @@
                             </div>
 
                             <div class="mt-3 d-flex gap-2">
-                                <a href="{{ asset('storage/' . $b->file_path) }}"
-                                   class="btn btn-sm btn-info"
-                                   target="_blank">
+                                <a href="{{ route('dosen.bimbingan.file.view', ['id' => $b->id, 'download' => 1]) }}"
+                                   class="btn btn-sm btn-info">
                                     <i class="bi bi-download"></i> Unduh
                                 </a>
 

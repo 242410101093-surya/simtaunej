@@ -59,10 +59,10 @@
                                 <div class="d-flex align-items-center gap-2">
                                     <i class="bi bi-file-earmark-text-fill text-primary"></i>
                                     <span>{{ basename($bimbingan->file_path) }}</span>
-                                    <a href="{{ asset('storage/' . $bimbingan->file_path) }}" class="btn btn-outline-info btn-sm" target="_blank">
+                                    <a href="{{ route('dosen.bimbingan.file.view', $bimbingan->id) }}" class="btn btn-outline-info btn-sm" target="_blank">
                                         <i class="bi bi-eye"></i> Lihat
                                     </a>
-                                    <a href="{{ asset('storage/' . $bimbingan->file_path) }}" class="btn btn-outline-success btn-sm" download>
+                                    <a href="{{ route('dosen.bimbingan.file.view', ['id' => $bimbingan->id, 'download' => 1]) }}" class="btn btn-outline-success btn-sm">
                                         <i class="bi bi-download"></i> Download
                                     </a>
                                 </div>
@@ -93,12 +93,12 @@
                                                 <td>{{ ucfirst($submission->file_type) }}</td>
                                                 <td>{{ number_format($submission->file_size / 1024, 2) }} KB</td>
                                                 <td>
-                                                    <a href="{{ asset('storage/' . $submission->file_path) }}" class="btn btn-outline-info btn-sm" target="_blank">
+                                                    <a href="{{ route('dosen.bimbingan.submission-file.view', $submission->id) }}" class="btn btn-outline-info btn-sm" target="_blank">
                                                         <i class="bi bi-eye"></i> Lihat
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ asset('storage/' . $submission->file_path) }}" class="btn btn-outline-success btn-sm" download>
+                                                    <a href="{{ route('dosen.bimbingan.submission-file.view', ['id' => $submission->id, 'download' => 1]) }}" class="btn btn-outline-success btn-sm">
                                                         <i class="bi bi-download"></i> Download
                                                     </a>
                                                 </td>

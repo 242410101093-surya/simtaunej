@@ -196,6 +196,12 @@ Route::middleware(['auth', 'role:dosen'])
         Route::get('/bimbingan/{id}/review', [DosenBimbinganController::class, 'reviewBimbingan'])
             ->name('bimbingan.review-new');
 
+        Route::get('/bimbingan/file/{id}', [DosenBimbinganController::class, 'viewFile'])
+            ->name('bimbingan.file.view');
+            
+        Route::get('/bimbingan/submission-file/{id}', [DosenBimbinganController::class, 'viewSubmissionFile'])
+            ->name('bimbingan.submission-file.view');
+
         Route::post('/bimbingan/comment-submission/{submissionId}', [DosenBimbinganController::class, 'commentOnSubmission'])
             ->name('bimbingan.comment-submission');
 
@@ -239,6 +245,12 @@ Route::middleware(['auth', 'role:mahasiswa'])
 
         Route::post('/bimbingan/{bimbingan}/upload', [MahasiswaController::class, 'storeUpload'])
             ->name('uploads.store');
+
+        Route::get('/bimbingan/file/{id}/view', [MahasiswaController::class, 'viewFile'])
+            ->name('bimbingan.file.view');
+            
+        Route::get('/bimbingan/submission-file/{id}/view', [MahasiswaController::class, 'viewSubmissionFile'])
+            ->name('bimbingan.submission-file.view');
 
         Route::get('/bimbingan/upload', [MahasiswaBimbinganController::class, 'create'])
             ->name('bimbingan.create');

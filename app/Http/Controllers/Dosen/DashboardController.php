@@ -62,13 +62,33 @@ class DashboardController extends Controller
             ->with('mahasiswa')
             ->get();
 
+        // 6. Jadwal bimbingan mendatang (approved)
+        $nowDate = \Carbon\Carbon::now()->toDateString();
+        $nowTime = \Carbon\Carbon::now()->format('H:i:s');
+
+        $upcomingAppointments = Appointment::where('dosen_id', $dosenId)
+            ->where('status', 'approved')
+            ->where(function ($query) use ($nowDate, $nowTime) {
+                $query->where('scheduled_date', '>', $nowDate)
+                      ->orWhere(function ($q) use ($nowDate, $nowTime) {
+                          $q->where('scheduled_date', '=', $nowDate)
+                            ->where('scheduled_time', '>=', $nowTime);
+                      });
+            })
+            ->with('mahasiswa')
+            ->orderBy('scheduled_date', 'asc')
+            ->orderBy('scheduled_time', 'asc')
+            ->take(5)
+            ->get();
+
         return view('dosen.dashboard', compact(
             'totalMahasiswa',
             'pendingReview',
             'recentBimbingan',
             'mahasiswaBimbingan',
             'bimbinganPending',
-            'appointments'
+            'appointments',
+            'upcomingAppointments'
         ));
     }
 }

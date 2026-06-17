@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Dosen;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bimbingan;
+use App\Models\SubmissionFile;
 use App\Models\StatusMahasiswa;
 use App\Models\User;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class DosenBimbinganController extends Controller
 {
@@ -150,6 +152,47 @@ class DosenBimbinganController extends Controller
         ]);
 
         return back()->with('success', 'Komentar berhasil ditambahkan.');
+    }
+
+    public function viewFile($id)
+    {
+        $dosen = Auth::user();
+        $bimbingan = Bimbingan::where('dosen_id', $dosen->id)->findOrFail($id);
+
+        if (!$bimbingan->file_path || !Storage::disk('public')->exists($bimbingan->file_path)) {
+            abort(404, 'File bimbingan tidak ditemukan atau sudah dihapus.');
+        }
+
+        $isDownload = request()->has('download');
+        
+        if ($isDownload) {
+            return Storage::disk('public')->download($bimbingan->file_path, 'Bimbingan_' . $bimbingan->mahasiswa->name . '.' . pathinfo($bimbingan->file_path, PATHINFO_EXTENSION));
+        }
+
+        return Storage::disk('public')->response($bimbingan->file_path);
+    }
+
+    public function viewSubmissionFile($id)
+    {
+        $dosen = Auth::user();
+        $submission = SubmissionFile::findOrFail($id);
+        
+        // Verifikasi kepemilikan
+        $bimbingan = Bimbingan::where('id', $submission->bimbingan_id)
+            ->where('dosen_id', $dosen->id)
+            ->firstOrFail();
+
+        if (!$submission->file_path || !Storage::disk('public')->exists($submission->file_path)) {
+            abort(404, 'File revisi tidak ditemukan atau sudah dihapus.');
+        }
+
+        $isDownload = request()->has('download');
+        
+        if ($isDownload) {
+            return Storage::disk('public')->download($submission->file_path, $submission->file_name);
+        }
+
+        return Storage::disk('public')->response($submission->file_path);
     }
 
     // Tombol Kelayakan Seminar / Sidang

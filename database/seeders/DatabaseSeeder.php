@@ -74,6 +74,9 @@ class DatabaseSeeder extends Seeder
 
         echo "✓ Dosen created (3)\n";
 
+        // Seed dosen lengkap FASILKOM UNEJ
+        $this->call(DosenFasilkomSeeder::class);
+
         // 3. Buat Mahasiswa
         $mahasiswa1 = User::create([
             'name' => 'Ahmad Fauzi',

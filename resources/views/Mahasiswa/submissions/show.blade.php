@@ -52,15 +52,15 @@
 
         <!-- Download Link -->
         <div class="d-flex gap-2 mb-4">
-            <a href="{{ asset('storage/' . $submission->file_path) }}" class="btn btn-outline-primary" download>
+            <a href="{{ route('mahasiswa.bimbingan.submission-file.view', ['id' => $submission->id, 'download' => 1]) }}" class="btn btn-outline-primary" download>
                 <i class="bi bi-download"></i> Download File
             </a>
-            <a href="{{ asset('storage/' . $submission->file_path) }}" class="btn btn-outline-secondary" target="_blank">
-                <i class="bi bi-eye"></i> Lihat Preview
+            <a href="{{ route('mahasiswa.bimbingan.submission-file.view', $submission->id) }}" class="btn btn-outline-secondary" target="_blank">
+                <i class="bi bi-eye"></i> Lihat File
             </a>
             @if(in_array(pathinfo($submission->file_path, PATHINFO_EXTENSION), ['pdf']))
-                <a href="{{ asset('storage/' . $submission->file_path) }}" class="btn btn-outline-info" target="_blank">
-                    <i class="bi bi-file-earmark-pdf"></i> Buka PDF
+                <a href="{{ route('mahasiswa.bimbingan.file.view', $submission->bimbingan->id) }}" class="btn btn-outline-info" target="_blank">
+                    <i class="bi bi-eye"></i> Lihat Bimbingan Utama
                 </a>
             @endif
         </div>

@@ -163,35 +163,46 @@
                 <i class="bi bi-cloud-arrow-up fs-4 text-white"></i>
             </div>
             <div>
-                <h5 class="mb-0 fw-bold">Upload File Bimbingan</h5>
-                <p class="mb-0 text-white-50 small">Unggah draf atau revisi dokumen Anda untuk ditinjau oleh dosen.</p>
+                <h5 class="mb-0 fw-bold">{{ isset($bimbinganModel) ? 'Upload Revisi Bimbingan' : 'Upload File Bimbingan' }}</h5>
+                <p class="mb-0 text-white-50 small">
+                    {{ isset($bimbinganModel) ? 'Unggah draf revisi dokumen bimbingan Anda untuk ditinjau oleh dosen.' : 'Unggah draf atau revisi dokumen Anda untuk ditinjau oleh dosen.' }}
+                </p>
             </div>
         </div>
         
         <div class="card-body p-4 p-md-5">
-            <form action="{{ route('mahasiswa.bimbingan.store') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+            @if(isset($bimbinganModel))
+                <form action="{{ route('mahasiswa.uploads.store', $bimbinganModel->id) }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+            @else
+                <form action="{{ route('mahasiswa.bimbingan.store') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+            @endif
                 @csrf
 
-                {{-- FITUR PILIHAN DOSEN PEMBIMBING --}}
-                <div class="mb-4">
-                    <label for="dosen_id" class="form-label">Dosen Pembimbing <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-person-badge-fill"></i></span>
-                        <select name="dosen_id" id="dosen_id" class="form-select" required>
-                            <option value="" selected disabled>-- Pilih Dosen Pembimbing --</option>
-                            @foreach ($dosens as $dosen)
-                                <option value="{{ $dosen->id }}">{{ $dosen->name }}</option>
-                            @endforeach
-                        </select>
+                @if(!isset($bimbinganModel))
+                    {{-- FITUR PILIHAN DOSEN PEMBIMBING --}}
+                    <div class="mb-4">
+                        <label for="dosen_id" class="form-label">Dosen Pembimbing <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person-badge-fill"></i></span>
+                            <select name="dosen_id" id="dosen_id" class="form-select" required>
+                                <option value="" selected disabled>-- Pilih Dosen Pembimbing --</option>
+                                @foreach ($dosens as $dosen)
+                                    <option value="{{ $dosen->id }}">{{ $dosen->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 {{-- Topik / Judul Bimbingan --}}
                 <div class="mb-4">
                     <label for="judul" class="form-label">Topik / Judul Bimbingan <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-chat-left-quote-fill"></i></span>
-                        <input type="text" name="judul" id="judul" class="form-control" placeholder="Contoh: Sistem Informasi Manajemen Inventori" required>
+                        <input type="text" name="judul" id="judul" class="form-control" 
+                               placeholder="Contoh: Sistem Informasi Manajemen Inventori" 
+                               value="{{ isset($bimbinganModel) ? $bimbinganModel->judul : old('judul') }}"
+                               required>
                     </div>
                 </div>
 
@@ -201,19 +212,21 @@
                     <textarea name="deskripsi" id="deskripsi" class="form-control" rows="4" placeholder="Jelaskan secara ringkas tentang progres atau revisi pada file ini..."></textarea>
                 </div>
 
-                {{-- Tipe File (Fase) --}}
-                <div class="mb-4">
-                    <label for="fase" class="form-label">Tipe File <span class="text-danger">*</span></label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="bi bi-tags-fill"></i></span>
-                        <select name="fase" id="fase" class="form-select" required>
-                            <option value="" selected disabled>-- Pilih Tipe --</option>
-                            <option value="proposal">Proposal (Sempro)</option>
-                            <option value="sempro">Seminar Proposal (Sempro)</option>
-                            <option value="sidang">Sidang</option>
-                        </select>
+                @if(!isset($bimbinganModel))
+                    {{-- Tipe File (Fase) --}}
+                    <div class="mb-4">
+                        <label for="fase" class="form-label">Tipe File <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-tags-fill"></i></span>
+                            <select name="fase" id="fase" class="form-select" required>
+                                <option value="" selected disabled>-- Pilih Tipe --</option>
+                                <option value="proposal">Proposal (Sempro)</option>
+                                <option value="sempro">Seminar Proposal (Sempro)</option>
+                                <option value="sidang">Sidang</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 {{-- File Dokumen --}}
                 <div class="mb-5">

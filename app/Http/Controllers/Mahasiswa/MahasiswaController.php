@@ -166,7 +166,7 @@ class MahasiswaController extends Controller
             ->where('mahasiswa_id', Auth::id())
             ->firstOrFail();
 
-        $filePath = $request->file('file')->store('submissions', 'public');
+        $filePath = $request->file('file')->store('bimbingan', 'public');
 
         SubmissionFile::create([
             'bimbingan_id' => $bimbinganModel->id,
@@ -181,7 +181,12 @@ class MahasiswaController extends Controller
             'submitted_at' => now(),
         ]);
 
-        $bimbinganModel->update(['status' => 'pending', 'tanggal_upload' => now()]);
+        $bimbinganModel->update([
+            'judul'          => $request->judul,
+            'status'         => 'pending',
+            'tanggal_upload' => now(),
+            'file_path'      => $filePath,
+        ]);
 
         return redirect()->route('mahasiswa.bimbingan.show', $bimbingan)
             ->with('success', 'File berhasil diupload.');
@@ -232,5 +237,45 @@ class MahasiswaController extends Controller
         $zip->close();
 
         return response()->download($zipPath, $zipName)->deleteFileAfterSend(true);
+    }
+
+    public function viewFile($id)
+    {
+        $mahasiswaId = Auth::id();
+        $bimbingan = Bimbingan::where('id', $id)
+            ->where('mahasiswa_id', $mahasiswaId)
+            ->firstOrFail();
+
+        if (!$bimbingan->file_path || !Storage::disk('public')->exists($bimbingan->file_path)) {
+            abort(404, 'File bimbingan tidak ditemukan atau sudah dihapus.');
+        }
+
+        $isDownload = request()->has('download');
+        
+        if ($isDownload) {
+            return Storage::disk('public')->download($bimbingan->file_path, 'Bimbingan_' . $bimbingan->judul . '.' . pathinfo($bimbingan->file_path, PATHINFO_EXTENSION));
+        }
+
+        return Storage::disk('public')->response($bimbingan->file_path);
+    }
+
+    public function viewSubmissionFile($id)
+    {
+        $mahasiswaId = Auth::id();
+        $submission = SubmissionFile::where('id', $id)
+            ->where('mahasiswa_id', $mahasiswaId)
+            ->firstOrFail();
+
+        if (!$submission->file_path || !Storage::disk('public')->exists($submission->file_path)) {
+            abort(404, 'File revisi tidak ditemukan atau sudah dihapus.');
+        }
+
+        $isDownload = request()->has('download');
+        
+        if ($isDownload) {
+            return Storage::disk('public')->download($submission->file_path, $submission->file_name);
+        }
+
+        return Storage::disk('public')->response($submission->file_path);
     }
 }
