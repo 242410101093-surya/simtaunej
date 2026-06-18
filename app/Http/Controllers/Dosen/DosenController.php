@@ -126,6 +126,7 @@ class DosenController extends Controller
 
         // Mengambil data bimbingan mahasiswa
         $bimbingan = Bimbingan::where('mahasiswa_id', $mahasiswa->id)
+            ->where('dosen_id', $dosenId)
             ->with(['submissionFiles.comments'])
             ->latest('created_at')
             ->paginate(10);
